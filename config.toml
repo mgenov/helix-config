@@ -31,13 +31,6 @@ cursor-line = "error"
 left = ["mode", "spacer", "file-name", "file-modification-indicator"]
 center = ["diagnostics"]
 right = ["version-control", "spacer", "position", "file-type"]
-# right = [
-#   "selections",
-#   "position",
-#   "file-encoding",
-#   "file-line-ending",
-#   "file-type",
-# ]
 separator = "|"
 diagnostics = ["error", "warning"]
 workspace-diagnostics = ["error", "warning"]
@@ -56,18 +49,27 @@ j = { k = "normal_mode" }
 [keys.normal]
 ret = ":write"
 C-q = ":bc"
-"," = { q = ":bc", w = ":w", x = ":x" }
+"," = { q = ":bc", w = ":w", x = ":x", r = ":rla" }
 C-h = ":buffer-previous"
 C-l = ":buffer-next"
 # Open LazyGit in a floating terminal window (requires 'lazygit' installed)
-C-g = [":new", ":insert-output lazygit", ":buffer-close!", ":redraw"]
+C-g = [
+  ":write-all",
+  ":new",
+  ":insert-output lazygit",
+  ":set mouse false",       # First disable mouse to hint helix into activating it
+  ":set mouse true",
+  ":buffer-close!",
+  ":redraw",
+  ":reload-all",
+]
 C-b = ":echo %sh{git blame -L %{cursor_line},+1 -c %{buffer_name}}"
 C-e = [
   ":sh rm -f /tmp/unique-file-u41ae14",
   ":insert-output yazi '%{buffer_name}' --chooser-file=/tmp/unique-file-u41ae14",
-  ":insert-output echo \"x1b[?1049h\" > /dev/tty",
   ":open %sh{cat /tmp/unique-file-u41ae14}",
   ":redraw",
+  ":sh printf '\\033[?1000h\\033[?1002h\\033[?1003h\\033[?1006h' > /dev/tty",
 ]
 "C-," = ':! echo -e "\e]52;;$(echo %{buffer_name} | base64)\007" > /dev/tty'
 C-j = ["extend_to_line_bounds", "delete_selection", "paste_after"]
